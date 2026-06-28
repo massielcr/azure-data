@@ -28,6 +28,7 @@ jobs:
         uses: azure/bicep-deploy@v1
         with:
           type: 'deployment'
+          scope: 'subscription'
           location: 'canadacentral'
           operation: 'create'
           template-file: './resource-group-create.json'

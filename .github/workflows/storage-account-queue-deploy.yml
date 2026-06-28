@@ -27,7 +27,7 @@ jobs:
       - name: Deploy Azure Storage Resource Group
         uses: azure/bicep-deploy@v1
         with:
-          type: 'subscription'
+          type: 'deployment'
           location: 'canadacentral'
           template-file: './resource-group-create.json'
           parameters-file: './storage-account-create-parameters.json'

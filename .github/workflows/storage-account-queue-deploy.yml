@@ -29,5 +29,6 @@ jobs:
         with:
           type: 'deployment'
           location: 'canadacentral'
+          operation: 'Create'
           template-file: './resource-group-create.json'
           parameters-file: './storage-account-create-parameters.json'

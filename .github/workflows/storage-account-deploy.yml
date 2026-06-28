@@ -33,4 +33,3 @@ jobs:
           location: 'canadacentral'
           operation: 'create'
           template-file: './resource-group-create.json'
-          parameters-file: './storage-account-create-parameters.json'

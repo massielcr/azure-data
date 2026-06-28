@@ -15,6 +15,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      # 1b. DEBUG STEP: Show exactly what files were downloaded
+      - name: List Files in Workspace
+        run: |
+          echo "Current working directory:"
+          pwd
+          echo "Files in root directory:"
+          ls -la
+
       # 2. Log into Azure securely without passwords/secrets
       - name: Az CLI Login 
         uses: azure/login@v2
@@ -33,3 +41,4 @@ jobs:
           location: 'canadacentral'
           operation: 'create'
           template-file: './resource-group-create.json'
+          parameters-file: './storage-account-create-parameters.json'

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://azure.com",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.13.1.58284",
+      "templateHash": "48291038505368246704"
+    }
+  },
+  "parameters": {
+    "resourceGroupName": {
+      "type": "string",
+      "defaultValue": "[format('rg-{0}', uniqueString(deployment().name))]",
+      "metadata": {
+        "description": "The name of the resource group."
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location for the resource group and its metadata."
+      }
+    }    
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2021-04-01",
+      "name": "[parameters('resourceGroupName')]",
+      "location": "[parameters('location')]",
+      "properties": {}
+    }
+  ],
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "value": "[parameters('resourceGroupName')]"
+    },
+    "resourceGroupId": {
+      "type": "string",
+      "value": "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroupName'))]"
+    }
+  }
+}

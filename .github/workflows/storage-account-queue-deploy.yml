@@ -29,6 +29,7 @@ jobs:
         with:
           type: 'deployment'
           scope: 'subscription'
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           location: 'canadacentral'
           operation: 'create'
           template-file: './resource-group-create.json'

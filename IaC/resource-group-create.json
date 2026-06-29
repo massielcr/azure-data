@@ -30,6 +30,16 @@
       }
     }
   },
+  "tags": {
+      "type": "object",
+      "defaultValue": {
+        "Environment": "Dev",
+        "Repo": "azure-data"
+      },
+      "metadata": {
+        "description": "The tags to apply to the resource group."
+      }
+  },
   "resources": [
     {
       "type": "Microsoft.Resources/resourceGroups",

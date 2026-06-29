@@ -3,8 +3,24 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "location": { "type": "string" },
+    "resourceGroupName": {
+      "type": "string",
+      "defaultValue": ""
+    },
     "vnetName": { "type": "string", "defaultValue": "azure-data-vnet" },
-    "subnetName": { "type": "string", "defaultValue": "private-subnet" }
+    "subnetName": { "type": "string", "defaultValue": "private-subnet" },
+    "storageAccountName": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "storageAccountType": {
+      "type": "string",
+      "defaultValue": ""
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {}
+    }
   },
   "resources": [
     {

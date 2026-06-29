@@ -58,7 +58,7 @@
     },
     "queueId": {
       "type": "string",
-      "value": "[resourceId('Microsoft.Storage/queueServices/queues', parameters('queueName'))]"
+      "value": "[resourceId('Microsoft.Storage/queueServices/queues', 'default', parameters('queueName'))]"
     }
   }
 }

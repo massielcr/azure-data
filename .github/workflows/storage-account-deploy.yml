@@ -28,6 +28,7 @@ jobs:
         id: deploy_rg
         run: |
           az deployment sub create \
+            --name azure-data-storage-account \
             --location canadacentral \
             --template-file ./IaC/resource-group-create.json \
             --parameters ./IaC/azure-data-parameters.json

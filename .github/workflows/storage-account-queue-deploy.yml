@@ -111,3 +111,20 @@ jobs:
               --parameters ./IaC/azure-data-parameters.json \
               --parameters location="${{ inputs.location }}" \
                            queueName="${{ inputs.queueName }}"
+
+      - name: Deploy Queue
+        id: deploy_queue
+        uses: azure/cli@v2
+        with:
+          azcliversion: 2.79.0
+          inlineScript: |
+            QUEUE_NAME=$(az deployment group create \
+              --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
+              --template-file ./IaC/queue-create.json \
+              --parameters ./IaC/azure-data-parameters.json \
+              --parameters location="${{ inputs.location }}" \
+                           queueName="${{ inputs.queueName }}" \
+              --query "properties.outputs.queueName.value" \
+              --output tsv)
+            echo "queue_name=$QUEUE_NAME" >> $GITHUB_OUTPUT
+            echo "Queue deployed: ${QUEUE_NAME}"

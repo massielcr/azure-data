@@ -50,5 +50,15 @@
         "name": "[concat(parameters('storageAccountName'), '/default/', parameters('queueName'))]",
         "properties": {}
     }
-  ]
+  ],
+  "outputs": {
+    "queueName": {
+      "type": "string",
+      "value": "[parameters('queueName')]"
+    },
+    "queueId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Storage/queueServices/queues', parameters('queueName'))]"
+    }
+  }
 }

@@ -48,7 +48,14 @@
       },
       "kind": "StorageV2",
       "tags": "[parameters('tags')]",
-      "properties": {}
+      "properties": {
+          "allowSharedKeyAccess": true,
+          "publicNetworkAccess": "Disabled", 
+          "networkAcls": {
+              "bypass": "AzureServices",
+              "defaultAction": "Deny"
+          }
+      }
     }
   ],
   "outputs": {

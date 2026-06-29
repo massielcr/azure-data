@@ -96,6 +96,31 @@ jobs:
             echo "storage_account_name=$STORAGE_NAME" >> $GITHUB_OUTPUT
             echo "Storage account deployed: ${STORAGE_NAME}"
 
+      - name: Validate Private Endpoint template
+        uses: azure/cli@v2
+        with:
+          azcliversion: 2.79.0
+          inlineScript: |
+            az deployment group validate \
+              --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
+              --template-file ./IaC/private-endpoint-create.json \
+              --parameters ./IaC/azure-data-parameters.json \
+              --parameters location="${{ inputs.location }}" \
+                           storageAccountName="${{ steps.deploy_storage.outputs.storage_account_name }}"
+
+      - name: Deploy Private Endpoint
+        id: deploy_pe
+        uses: azure/cli@v2
+        with:
+          azcliversion: 2.79.0
+          inlineScript: |
+            az deployment group create \
+              --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
+              --template-file ./IaC/private-endpoint-create.json \
+              --parameters ./IaC/azure-data-parameters.json \
+              --parameters location="${{ inputs.location }}" \
+                           storageAccountName="${{ steps.deploy_storage.outputs.storage_account_name }}"      
+      
       - name: Validate Queue template
         uses: azure/cli@v2
         with:

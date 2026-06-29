@@ -54,7 +54,7 @@ jobs:
               --parameters location="${{ inputs.location }}" \
                            resourceGroupName="${{ inputs.resourceGroupName }}"
 
-      - name: Deploy Azure Resource Group
+      - name: Deploy Resource Group
         id: deploy_rg
         uses: azure/cli@v2
         with:
@@ -83,7 +83,7 @@ jobs:
               --parameters location="${{ inputs.location }}" \
                            storageAccountType="${{ inputs.storageAccountType }}"
 
-      - name: Deploy Azure Storage Account
+      - name: Deploy Storage Account
         id: deploy_storage
         uses: azure/cli@v2
         with:

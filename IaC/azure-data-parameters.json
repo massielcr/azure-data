@@ -8,6 +8,12 @@
     "resourceGroupName" : {
       "value": "azure-data-storage-rg"
     },
+    "vnetName": {
+      "value": "azure-data-vnet"
+    },
+    "subnetName": {
+      "value": "private-subnet"
+    },
     "storageAccountName": {
       "value":  "mcrazstorage"
     },

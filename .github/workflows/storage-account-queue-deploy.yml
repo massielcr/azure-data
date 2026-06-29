@@ -69,6 +69,24 @@ jobs:
             echo "rg_name=$RG_NAME" >> $GITHUB_OUTPUT
             echo "Resource group deployed: ${RG_NAME}"
 
+      - name: Validate and Deploy VNet
+        id: deploy_vnet
+        uses: azure/cli@v2
+        with:
+          azcliversion: 2.79.0
+          inlineScript: |
+            az deployment group validate \
+              --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
+              --template-file ./IaC/virtual-network-create.json \
+              --parameters ./IaC/azure-data-parameters.json \
+              --parameters location="${{ inputs.location }}"
+              
+            az deployment group create \
+              --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
+              --template-file ./IaC/virtual-network-create.json \
+              --parameters ./IaC/azure-data-parameters.json \
+              --parameters location="${{ inputs.location }}"
+
       - name: Validate Storage Account template
         uses: azure/cli@v2
         with:
@@ -96,38 +114,6 @@ jobs:
             echo "storage_account_name=$STORAGE_NAME" >> $GITHUB_OUTPUT
             echo "Storage account deployed: ${STORAGE_NAME}"
 
-      - name: Validate Private Endpoint template
-        uses: azure/cli@v2
-        with:
-          azcliversion: 2.79.0
-          inlineScript: |
-            az deployment group validate \
-              --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
-              --template-file ./IaC/private-endpoint-create.json \
-              --parameters ./IaC/azure-data-parameters.json \
-              --parameters location="${{ inputs.location }}" \
-                          storageAccountName="${{ steps.deploy_storage.outputs.storage_account_name }}" \
-                          vnetName="your-vnet-name" \
-                          subnetName="your-subnet-name" \
-                          privateDnsZoneId="/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ steps.deploy_rg.outputs.rg_name }}/providers/Microsoft.Network/privateDnsZones/privatelink.queue.core.windows.net"
-
-      - name: Deploy Private Endpoint
-        id: deploy_pe
-        uses: azure/cli@v2
-        with:
-          azcliversion: 2.79.0
-          inlineScript: |
-            az deployment group create \
-              --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
-              --template-file ./IaC/private-endpoint-create.json \
-              --parameters ./IaC/azure-data-parameters.json \
-              --parameters location="${{ inputs.location }}" \
-                           storageAccountName="${{ steps.deploy_storage.outputs.storage_account_name }}" \
-                           vnetName="your-vnet-name" \
-                           subnetName="your-subnet-name" \
-                           privateDnsZoneId="/subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ steps.deploy_rg.outputs.rg_name }}/providers/Microsoft.Network/privateDnsZones/privatelink.queue.core.windows.net"
-      
-      
       - name: Validate Queue template
         uses: azure/cli@v2
         with:

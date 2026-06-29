@@ -42,7 +42,7 @@ jobs:
         with:
           azcliversion: latest
           inlineScript: |
-            az storage account create \
+            az deployment group create \
               --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
               --template-file ./IaC/resource-group-create.json \
               --parameters ./IaC/azure-data-parameters.json

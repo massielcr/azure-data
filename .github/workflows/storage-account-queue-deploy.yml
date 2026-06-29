@@ -51,8 +51,7 @@ jobs:
               --location "${{ inputs.location }}" \
               --template-file ./IaC/resource-group-create.json \
               --parameters ./IaC/azure-data-parameters.json \
-              --parameters location="${{ inputs.location }}" \
-                           resourceGroupName="${{ inputs.resourceGroupName }}"
+              --parameters location="${{ inputs.location }}" resourceGroupName="${{ inputs.resourceGroupName }}"
 
       - name: Deploy Resource Group
         id: deploy_rg
@@ -64,8 +63,7 @@ jobs:
               --location "${{ inputs.location }}" \
               --template-file ./IaC/resource-group-create.json \
               --parameters ./IaC/azure-data-parameters.json \
-              --parameters location="${{ inputs.location }}" \
-                           resourceGroupName="${{ inputs.resourceGroupName }}" \
+              --parameters location="${{ inputs.location }}" resourceGroupName="${{ inputs.resourceGroupName }}" \
               --query "properties.outputs.resourceGroupName.value" \
               --output tsv)
             echo "rg_name=$RG_NAME" >> $GITHUB_OUTPUT
@@ -80,8 +78,7 @@ jobs:
               --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
               --template-file ./IaC/storage-account-create.json \
               --parameters ./IaC/azure-data-parameters.json \
-              --parameters location="${{ inputs.location }}" \
-                           storageAccountType="${{ inputs.storageAccountType }}"
+              --parameters location="${{ inputs.location }}" storageAccountType="${{ inputs.storageAccountType }}"
 
       - name: Deploy Storage Account
         id: deploy_storage
@@ -93,8 +90,7 @@ jobs:
               --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
               --template-file ./IaC/storage-account-create.json \
               --parameters ./IaC/azure-data-parameters.json \
-              --parameters location="${{ inputs.location }}" \
-                           storageAccountType="${{ inputs.storageAccountType }}" \
+              --parameters location="${{ inputs.location }}" storageAccountType="${{ inputs.storageAccountType }}" \
               --query "properties.outputs.storageAccountName.value" \
               --output tsv)
             echo "storage_account_name=$STORAGE_NAME" >> $GITHUB_OUTPUT
@@ -109,9 +105,7 @@ jobs:
               --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
               --template-file ./IaC/queue-create.json \
               --parameters ./IaC/azure-data-parameters.json \
-              --parameters location="${{ inputs.location }}" \
-                           storageAccountName="${{ steps.deploy_storage.outputs.storage_account_name }} \
-                           queueName="${{ inputs.queueName }}"
+              --parameters location="${{ inputs.location }}" queueName="${{ inputs.queueName }}" storageAccountName="${{ steps.deploy_storage.outputs.storage_account_name }}"
 
       - name: Deploy Queue
         id: deploy_queue
@@ -123,9 +117,7 @@ jobs:
               --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
               --template-file ./IaC/queue-create.json \
               --parameters ./IaC/azure-data-parameters.json \
-              --parameters location="${{ inputs.location }}" \
-                           storageAccountName="${{ steps.deploy_storage.outputs.storage_account_name }} \
-                           queueName="${{ inputs.queueName }}" \
+              --parameters location="${{ inputs.location }}" queueName="${{ inputs.queueName }}" storageAccountName="${{ steps.deploy_storage.outputs.storage_account_name }}" \
               --query "properties.outputs.queueName.value" \
               --output tsv)
             echo "queue_name=$QUEUE_NAME" >> $GITHUB_OUTPUT

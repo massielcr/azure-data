@@ -2,50 +2,95 @@ name: Deploy Azure Storage Account - Queue
 
 on:
   workflow_dispatch:
+    inputs:
+      location:
+        description: Azure deployment location
+        required: false
+        default: canadacentral
+      resourceGroupName:
+        description: Name of the resource group
+        required: false
+        default: azure-data-storage-rg
+      storageAccountType:
+        description: Storage account SKU
+        required: false
+        default: Standard_LRS
 
 permissions:
-  id-token: write
   contents: read
+
+concurrency:
+  group: storage-account-deploy-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1. Downloads repository files
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 2. Log into Azure securely
-      - name: Az CLI Login 
+      - name: Az CLI Login
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # 3. Deploy a resource group using native Azure CLI and extract its output name natively
+      - name: Validate Resource Group template
+        uses: azure/cli@v2
+        with:
+          azcliversion: 2.79.0
+          inlineScript: |
+            az deployment sub validate \
+              --location "${{ inputs.location }}" \
+              --template-file ./IaC/resource-group-create.json \
+              --parameters ./IaC/azure-data-parameters.json \
+              --parameters location="${{ inputs.location }}" \
+                           resourceGroupName="${{ inputs.resourceGroupName }}"
+
       - name: Deploy Azure Resource Group
         id: deploy_rg
         uses: azure/cli@v2
         with:
-          azcliversion: latest
+          azcliversion: 2.79.0
           inlineScript: |
             RG_NAME=$(az deployment sub create \
-              --location canadacentral \
+              --location "${{ inputs.location }}" \
               --template-file ./IaC/resource-group-create.json \
               --parameters ./IaC/azure-data-parameters.json \
+              --parameters location="${{ inputs.location }}" \
+                           resourceGroupName="${{ inputs.resourceGroupName }}" \
               --query "properties.outputs.resourceGroupName.value" \
               --output tsv)
             echo "rg_name=$RG_NAME" >> $GITHUB_OUTPUT
+            echo "Resource group deployed: ${RG_NAME}"
 
-      # 4. Deploy a storage account using native Azure CLI
+      - name: Validate Storage Account template
+        uses: azure/cli@v2
+        with:
+          azcliversion: 2.79.0
+          inlineScript: |
+            az deployment group validate \
+              --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
+              --template-file ./IaC/storage-account-create.json \
+              --parameters ./IaC/azure-data-parameters.json \
+              --parameters location="${{ inputs.location }}" \
+                           storageAccountType="${{ inputs.storageAccountType }}"
+
       - name: Deploy Azure Storage Account
         id: deploy_storage
         uses: azure/cli@v2
         with:
-          azcliversion: latest
+          azcliversion: 2.79.0
           inlineScript: |
-            az deployment group create \
+            STORAGE_NAME=$(az deployment group create \
               --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
               --template-file ./IaC/storage-account-create.json \
-              --parameters ./IaC/azure-data-parameters.json
+              --parameters ./IaC/azure-data-parameters.json \
+              --parameters location="${{ inputs.location }}" \
+                           storageAccountType="${{ inputs.storageAccountType }}" \
+              --query "properties.outputs.storageAccountName.value" \
+              --output tsv)
+            echo "storage_account_name=$STORAGE_NAME" >> $GITHUB_OUTPUT
+            echo "Storage account deployed: ${STORAGE_NAME}"

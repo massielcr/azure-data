@@ -110,6 +110,7 @@ jobs:
               --template-file ./IaC/queue-create.json \
               --parameters ./IaC/azure-data-parameters.json \
               --parameters location="${{ inputs.location }}" \
+                           storageAccountName="${{ steps.deploy_storage.outputs.storage_account_name }} \
                            queueName="${{ inputs.queueName }}"
 
       - name: Deploy Queue
@@ -123,6 +124,7 @@ jobs:
               --template-file ./IaC/queue-create.json \
               --parameters ./IaC/azure-data-parameters.json \
               --parameters location="${{ inputs.location }}" \
+                           storageAccountName="${{ steps.deploy_storage.outputs.storage_account_name }} \
                            queueName="${{ inputs.queueName }}" \
               --query "properties.outputs.queueName.value" \
               --output tsv)

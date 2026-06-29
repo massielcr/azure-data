@@ -4,6 +4,9 @@
   "parameters": {
     "location": {
       "value": "canadacentral"
+    },
+    "storageAccountType": {
+      "value": "Standard_LRS"
     }
   }
 }

@@ -33,7 +33,7 @@ jobs:
             az deployment sub create \
               --location canadacentral \
               --template-file ./IaC/resource-group-create.json \
-              --parameters ./IaC/azure-data-parameters.json \
+              --parameters ./IaC/azure-data-parameters.json
 
       # 4. Deploy a storage account using native Azure CLI
       - name: Deploy Azure Storage Account
@@ -44,5 +44,5 @@ jobs:
           inlineScript: |
             az deployment group create \
               --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
-              --template-file ./IaC/resource-group-create.json \
+              --template-file ./IaC/storage-account-create.json \
               --parameters ./IaC/azure-data-parameters.json

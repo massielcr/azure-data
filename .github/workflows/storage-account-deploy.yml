@@ -11,11 +11,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1. Downloads repository's files onto the temporary GitHub server so workflow steps can access and use them
+      # 1. Downloads repository files
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 2. Log into Azure securely without passwords/secrets
+      # 2. Log into Azure securely
       - name: Az CLI Login 
         uses: azure/login@v2
         with:
@@ -23,15 +23,11 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # 3. Deploy a resource group (Using valid JSON formatting to bypass the scope bug)
+      # 3. Deploy a resource group using native Azure CLI (Bypasses the buggy action scope wrapper)
       - name: Deploy Azure Storage Resource Group
         id: deploy_rg
-        uses: azure/bicep-deploy@v1
-        with:
-          type: 'deployment'
-          scope: 'subscription'
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          location: 'canadacentral'
-          operation: 'create'
-          template-file: './IaC/resource-group-create.json'
-          parameters: '{"location": {"value": "canadacentral"}}'
+        run: |
+          az deployment sub create \
+            --location canadacentral \
+            --template-file ./IaC/resource-group-create.json \
+            --parameters ./IaC/azure-data-parameters.json

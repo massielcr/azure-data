@@ -40,5 +40,5 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           location: 'canadacentral'
           operation: 'create'
-          template-file: './resource-group-create.json'
-          parameters-file: './storage-account-create-parameters.json'
+          template-file: './IaC/resource-group-create.json'
+          parameters-file: './IaC/azure-data-parameters.json'

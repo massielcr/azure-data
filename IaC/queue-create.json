@@ -48,7 +48,9 @@
         "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
         "apiVersion": "2026-04-01",
         "name": "[format('{0}/default/{1}', parameters('storageAccountName'), parameters('queueName'))]",
-        "dependsOn": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
+        "dependsOn": [
+            "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]"
+        ],
         "properties": {}
     }
   ],

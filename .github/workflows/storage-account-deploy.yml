@@ -24,12 +24,14 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       # 3. Deploy a resource group using native Azure CLI (Bypasses the buggy action scope wrapper)
-      - name: Deploy Azure Storage Resource Group
+      - name: Deploy Azure Resource Group
         id: deploy_rg
-        run: |
-          az deployment sub create \
-            --name azure-data-storage-account \
-            --location canadacentral \
-            --template-file ./IaC/resource-group-create.json \
-            --parameters ./IaC/azure-data-parameters.json
-            --handle-extended-json-format
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az deployment sub create \
+              --location canadacentral \
+              --template-file ./IaC/resource-group-create.json \
+              --parameters ./IaC/azure-data-parameters.json \
+              --handle-extended-json-format

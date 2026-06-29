@@ -2,33 +2,33 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "resourceGroupName": {
-      "type": "string",
-      "defaultValue": "[format('rg-{0}', uniqueString(deployment().name))]",
-      "metadata": {
-        "description": "The name of the resource group."
-      }
-    },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location for the resource group and its metadata."
       }
     },
-    "storageAccountType": {
+    "resourceGroupName": {
       "type": "string",
-      "defaultValue": "Standard_LRS",
+      "defaultValue": "[format('rg-{0}', uniqueString(deployment().name))]",
       "metadata": {
-        "description": "Shared parameter used by the storage account step."
+        "description": "The name of the resource group."
       }
-    },
+    },  
     "storageAccountName": {
       "type": "string",
       "defaultValue": "[format('store{0}', uniqueString(resourceGroup().id))]",
       "metadata": {
         "description": "The name of the storage account"
       }
-    },
+    },  
+    "storageAccountType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "metadata": {
+        "description": "Shared parameter used by the storage account step."
+      }
+    },    
     "tags": {
       "type": "object",
       "defaultValue": {},

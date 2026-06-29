@@ -9,19 +9,19 @@
     }
   },
   "parameters": {
-    "resourceGroupName": {
-      "type": "string",
-      "defaultValue": "[format('rg-{0}', uniqueString(deployment().name))]",
-      "metadata": {
-        "description": "The name of the resource group."
-      }
-    },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location for the resource group and its metadata."
       }
     },
+    "resourceGroupName": {
+      "type": "string",
+      "defaultValue": "[format('rg-{0}', uniqueString(deployment().name))]",
+      "metadata": {
+        "description": "The name of the resource group."
+      }
+    },    
     "storageAccountType": {
       "type": "string",
       "defaultValue": "Standard_LRS",

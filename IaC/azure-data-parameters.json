@@ -9,7 +9,7 @@
       "value": "azure-data-storage-rg"
     },
     "storageAccountName": {
-      "value":  "azdatastorage"
+      "value":  "mcrazstorage"
     },
     "storageAccountType": {
       "value": "Standard_LRS"

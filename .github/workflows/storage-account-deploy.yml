@@ -41,4 +41,5 @@ jobs:
           location: 'canadacentral'
           operation: 'create'
           template-file: './IaC/resource-group-create.json'
-          parameters-file: './IaC/azure-data-parameters.json'
+          parameters: |
+            location=canadacentral

@@ -31,10 +31,7 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {
-        "environment": "dev",
-        "repo": "azure-data"
-      },
+      "defaultValue": {},
       "metadata": {
         "description": "The tags to apply to the resource group."
       }

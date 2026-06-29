@@ -8,6 +8,16 @@
     "resourceGroupName" : {
       "value": "azure-data-storage-rg"
     },
+    "tags": {
+      "type": "object",
+      "defaultValue": {
+        "environment": "dev",
+        "repo": "azure-data"
+      },
+      "metadata": {
+        "description": "The tags to apply to the resource group."
+      }
+    },
     "storageAccountType": {
       "value": "Standard_LRS"
     }

@@ -23,17 +23,20 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # 3. Deploy a resource group using native Azure CLI
+      # 3. Deploy a resource group using native Azure CLI and extract its output name natively
       - name: Deploy Azure Resource Group
         id: deploy_rg
         uses: azure/cli@v2
         with:
           azcliversion: latest
           inlineScript: |
-            az deployment sub create \
+            RG_NAME=$(az deployment sub create \
               --location canadacentral \
               --template-file ./IaC/resource-group-create.json \
-              --parameters ./IaC/azure-data-parameters.json
+              --parameters ./IaC/azure-data-parameters.json \
+              --query "properties.outputs.resourceGroupName.value" \
+              --output tsv)
+            echo "rg_name=$RG_NAME" >> $GITHUB_OUTPUT
 
       # 4. Deploy a storage account using native Azure CLI
       - name: Deploy Azure Storage Account

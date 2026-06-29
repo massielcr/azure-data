@@ -8,6 +8,9 @@
     "resourceGroupName" : {
       "value": "azure-data-storage-rg"
     },
+    "storageAccountName": {
+      "value":  "azdatastorage"
+    },
     "storageAccountType": {
       "value": "Standard_LRS"
     },

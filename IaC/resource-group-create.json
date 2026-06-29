@@ -28,6 +28,16 @@
       "metadata": {
         "description": "Shared parameter used by the storage account step."
       }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {
+        "Environment": "Dev",
+        "Repo": "azure-data"
+      },
+      "metadata": {
+        "description": "The tags to apply to the resource group."
+      }
     }
   },  
   "resources": [
@@ -36,18 +46,8 @@
       "apiVersion": "2021-04-01",
       "name": "[parameters('resourceGroupName')]",
       "location": "[parameters('location')]",
-      "properties": {
-          "tags": {
-              "type": "object",
-              "defaultValue": {
-                "Environment": "Dev",
-                "Repo": "azure-data"
-              },
-              "metadata": {
-                "description": "The tags to apply to the resource group."
-              }
-          }
-      }
+      "tags": "[parameters('tags')]",
+      "properties": {}
     }
   ],
   "outputs": {

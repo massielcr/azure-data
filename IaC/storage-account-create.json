@@ -22,6 +22,13 @@
       "metadata": {
         "description": "The name of the storage account"
       }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "The tags to apply to the resource group."
+      }
     }
   },
   "resources": [
@@ -34,6 +41,7 @@
         "name": "[parameters('storageAccountType')]"
       },
       "kind": "StorageV2",
+      "tags": "[parameters('tags')]",
       "properties": {}
     }
   ],

@@ -32,3 +32,4 @@ jobs:
             --location canadacentral \
             --template-file ./IaC/resource-group-create.json \
             --parameters ./IaC/azure-data-parameters.json
+            --handle-extended-json-format

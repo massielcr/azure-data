@@ -21,7 +21,13 @@
       "metadata": {
         "description": "The location for the resource group and its metadata."
       }
-    }    
+    },
+     "storageAccountType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "metadata": {
+        "description": "Shared parameter used by the storage account step."
+      }    
   },
   "resources": [
     {

@@ -35,3 +35,15 @@ jobs:
               --template-file ./IaC/resource-group-create.json \
               --parameters ./IaC/azure-data-parameters.json \
               --handle-extended-json-format
+
+      # 4. Deploy a storage account using native Azure CLI
+      - name: Deploy Azure Storage Account
+        id: deploy_storage
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az storage account create \
+              --name deploy_storage
+              --template-file ./IaC/resource-group-create.json \
+              --parameters ./IaC/azure-data-parameters.json

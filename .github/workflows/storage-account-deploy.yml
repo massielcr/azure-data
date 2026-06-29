@@ -15,14 +15,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 1b. DEBUG STEP: Show exactly what files were downloaded
-      - name: List Files in Workspace
-        run: |
-          echo "Current working directory:"
-          pwd
-          echo "Files in root directory:"
-          ls -la
-
       # 2. Log into Azure securely without passwords/secrets
       - name: Az CLI Login 
         uses: azure/login@v2
@@ -31,8 +23,9 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # 3. Deploy a resource group
+      # 3. Deploy a resource group (Using valid JSON formatting to bypass the scope bug)
       - name: Deploy Azure Storage Resource Group
+        id: deploy_rg
         uses: azure/bicep-deploy@v1
         with:
           type: 'deployment'
@@ -41,5 +34,4 @@ jobs:
           location: 'canadacentral'
           operation: 'create'
           template-file: './IaC/resource-group-create.json'
-          parameters: |
-            location=canadacentral
+          parameters: '{"location": {"value": "canadacentral"}}'

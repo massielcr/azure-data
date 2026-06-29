@@ -1,4 +1,4 @@
-name: Deploy Azure Storage Account - Queue
+name: Deploy Azure Storage Account
 
 on:
   workflow_dispatch:

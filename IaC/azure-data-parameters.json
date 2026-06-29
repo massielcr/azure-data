@@ -1,5 +1,12 @@
 {
   "$schema": "https://azure.com",
   "contentVersion": "1.0.0.0",
-  "parameters": {}
+  "parameters": {
+    "location": {
+      "value": "canadacentral"
+    },
+    "storageAccountType": {
+      "value": "Standard_LRS"
+    }
+  }
 }

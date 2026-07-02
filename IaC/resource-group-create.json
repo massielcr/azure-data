@@ -21,9 +21,7 @@
       "metadata": {
         "description": "The name of the resource group."
       }
-    },    
-    "vnetName": { "type": "string", "defaultValue": "azure-data-vnet" },
-    "subnetName": { "type": "string", "defaultValue": "private-subnet" },
+    },
     "storageAccountName": {
       "type": "string",
       "defaultValue": "[format('store{0}', uniqueString(resourceGroup().id))]",

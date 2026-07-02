@@ -1,6 +1,7 @@
 name: Provision Azure Storage Account
 
 on:
+  # Allows this file to be run manually from the GitHub Actions UI
   workflow_dispatch:
     inputs:
       location:
@@ -16,6 +17,29 @@ on:
         required: false
         default: Standard_LRS
 
+  # Allows this file to be called as a reusable workflow by another workflow
+  workflow_call:
+    inputs:
+      location:
+        type: string
+        required: false
+        default: canadacentral
+      resourceGroupName:
+        type: string
+        required: false
+        default: azure-data-storage-rg
+      storageAccountType:
+        type: string
+        required: false
+        default: Standard_LRS
+    outputs:
+      resource_group_name:
+        description: "The name of the deployed resource group"
+        value: ${{ jobs.deploy.outputs.rg_name }}
+      storage_account_name:
+        description: "The name of the deployed storage account"
+        value: ${{ jobs.deploy.outputs.storage_name }}
+
 permissions:
   id-token: write
   contents: read
@@ -27,6 +51,9 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    outputs:
+      rg_name: ${{ steps.deploy_rg.outputs.rg_name }}
+      storage_name: ${{ steps.deploy_storage.outputs.storage_account_name }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4

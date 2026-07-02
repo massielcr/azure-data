@@ -29,7 +29,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  provision-storage-account:
+    uses: ./.github/workflows/storage-account-provision.yml
+    with:
+      location: ${{ inputs.location }}
+      resourceGroupName: ${{ inputs.resourceGroupName }}
+      storageAccountType: ${{ inputs.storageAccountType }}
+
+  provision-queue:
+    needs: provision-storage-account
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -42,100 +50,32 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Validate Resource Group template
-        uses: azure/cli@v2
-        with:
-          azcliversion: 2.79.0
-          inlineScript: |
-            az deployment sub validate \
-              --location "${{ inputs.location }}" \
-              --template-file ./IaC/resource-group-create.json \
-              --parameters ./IaC/azure-data-parameters.json \
-              --parameters location="${{ inputs.location }}" resourceGroupName="${{ inputs.resourceGroupName }}"
-
-      - name: Deploy Resource Group
-        id: deploy_rg
-        uses: azure/cli@v2
-        with:
-          azcliversion: 2.79.0
-          inlineScript: |
-            RG_NAME=$(az deployment sub create \
-              --location "${{ inputs.location }}" \
-              --template-file ./IaC/resource-group-create.json \
-              --parameters ./IaC/azure-data-parameters.json \
-              --parameters location="${{ inputs.location }}" resourceGroupName="${{ inputs.resourceGroupName }}" \
-              --query "properties.outputs.resourceGroupName.value" \
-              --output tsv)
-            echo "rg_name=$RG_NAME" >> $GITHUB_OUTPUT
-            echo "Resource group deployed: ${RG_NAME}"
-
-      - name: Validate and Deploy VNet
-        id: deploy_vnet
-        uses: azure/cli@v2
-        with:
-          azcliversion: 2.79.0
-          inlineScript: |
-            az deployment group validate \
-              --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
-              --template-file ./IaC/virtual-network-create.json \
-              --parameters ./IaC/azure-data-parameters.json \
-              --parameters location="${{ inputs.location }}"
-              
-            az deployment group create \
-              --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
-              --template-file ./IaC/virtual-network-create.json \
-              --parameters ./IaC/azure-data-parameters.json \
-              --parameters location="${{ inputs.location }}"
-
-      - name: Validate Storage Account template
-        uses: azure/cli@v2
-        with:
-          azcliversion: 2.79.0
-          inlineScript: |
-            az deployment group validate \
-              --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
-              --template-file ./IaC/storage-account-create.json \
-              --parameters ./IaC/azure-data-parameters.json \
-              --parameters location="${{ inputs.location }}" storageAccountType="${{ inputs.storageAccountType }}"
-
-      - name: Deploy Storage Account
-        id: deploy_storage
-        uses: azure/cli@v2
-        with:
-          azcliversion: 2.79.0
-          inlineScript: |
-            STORAGE_NAME=$(az deployment group create \
-              --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
-              --template-file ./IaC/storage-account-create.json \
-              --parameters ./IaC/azure-data-parameters.json \
-              --parameters location="${{ inputs.location }}" storageAccountType="${{ inputs.storageAccountType }}" \
-              --query "properties.outputs.storageAccountName.value" \
-              --output tsv)
-            echo "storage_account_name=$STORAGE_NAME" >> $GITHUB_OUTPUT
-            echo "Storage account deployed: ${STORAGE_NAME}"
-
       - name: Validate Queue template
         uses: azure/cli@v2
         with:
           azcliversion: 2.79.0
           inlineScript: |
             az deployment group validate \
-              --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
+              --resource-group "${{ needs.provision-storage-account.outputs.resource_group_name }}" \
               --template-file ./IaC/queue-create.json \
               --parameters ./IaC/azure-data-parameters.json \
-              --parameters location="${{ inputs.location }}" queueName="${{ inputs.queueName }}" storageAccountName="${{ steps.deploy_storage.outputs.storage_account_name }}"
+              --parameters location="${{ inputs.location }}" \
+                           queueName="${{ inputs.queueName }}" \
+                           storageAccountName="${{ needs.provision-storage-account.outputs.storage_account_name }}"
 
-      - name: Deploy Queue
+      - name: Create Queue
         id: deploy_queue
         uses: azure/cli@v2
         with:
           azcliversion: 2.79.0
           inlineScript: |
             QUEUE_NAME=$(az deployment group create \
-              --resource-group "${{ steps.deploy_rg.outputs.rg_name }}" \
+              --resource-group "${{ needs.provision-storage-account.outputs.resource_group_name }}" \
               --template-file ./IaC/queue-create.json \
               --parameters ./IaC/azure-data-parameters.json \
-              --parameters location="${{ inputs.location }}" queueName="${{ inputs.queueName }}" storageAccountName="${{ steps.deploy_storage.outputs.storage_account_name }}" \
+              --parameters location="${{ inputs.location }}" \
+                           queueName="${{ inputs.queueName }}" \
+                           storageAccountName="${{ needs.provision-storage-account.outputs.storage_account_name }}" \
               --query "properties.outputs.queueName.value" \
               --output tsv)
             echo "queue_name=$QUEUE_NAME" >> $GITHUB_OUTPUT

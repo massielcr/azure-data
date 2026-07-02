@@ -1,4 +1,4 @@
-name: Deploy to Azure Test
+name: Connect to Azure Test
 
 on:
   workflow_dispatch:

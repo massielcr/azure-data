@@ -32,9 +32,9 @@ jobs:
   provision-storage-account:
     uses: ./.github/workflows/storage-account-provision.yml
     with:
-      location: ${{ inputs.location }}
-      resourceGroupName: ${{ inputs.resourceGroupName }}
-      storageAccountType: ${{ inputs.storageAccountType }}
+      location: ${{ github.event.inputs.location }}
+      resourceGroupName: ${{ github.event.inputs.resourceGroupName }}
+      storageAccountType: ${{ github.event.inputs.storageAccountType }}
     secrets: inherit
 
   provision-queue:
@@ -60,8 +60,8 @@ jobs:
               --resource-group "${{ needs.provision-storage-account.outputs.resource_group_name }}" \
               --template-file ./IaC/queue-create.json \
               --parameters ./IaC/azure-data-parameters.json \
-              --parameters location="${{ inputs.location }}" \
-                           queueName="${{ inputs.queueName }}" \
+              --parameters location="${{ github.event.inputs.location }}" \
+                           queueName="${{ github.event.inputs.queueName }}" \
                            storageAccountName="${{ needs.provision-storage-account.outputs.storage_account_name }}"
 
       - name: Create Queue
@@ -74,8 +74,8 @@ jobs:
               --resource-group "${{ needs.provision-storage-account.outputs.resource_group_name }}" \
               --template-file ./IaC/queue-create.json \
               --parameters ./IaC/azure-data-parameters.json \
-              --parameters location="${{ inputs.location }}" \
-                           queueName="${{ inputs.queueName }}" \
+              --parameters location="${{ github.event.inputs.location }}" \
+                           queueName="${{ github.event.inputs.queueName }}" \
                            storageAccountName="${{ needs.provision-storage-account.outputs.storage_account_name }}" \
               --query "properties.outputs.queueName.value" \
               --output tsv)

@@ -35,6 +35,7 @@ jobs:
       location: ${{ inputs.location }}
       resourceGroupName: ${{ inputs.resourceGroupName }}
       storageAccountType: ${{ inputs.storageAccountType }}
+    secrets: inherit
 
   provision-queue:
     needs: provision-storage-account
